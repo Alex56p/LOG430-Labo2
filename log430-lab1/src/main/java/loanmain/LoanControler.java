@@ -11,6 +11,8 @@
  */
 package loanmain;
 
+import javax.swing.tree.ExpandVetoException;
+
 import static loanmain.LoanItem.LoanType.DUREE;
 
 /**
@@ -117,7 +119,9 @@ public class LoanControler {
                 break;
         }
         if (lNewValue != null) {
-            item.fireItemChanged();
+            LoanChangeEvent event = new LoanChangeEvent(item);
+            EventBusManager.GetBus().post(event);
+            item.getEventBus().post(event);
         }
     }
 

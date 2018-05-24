@@ -3,9 +3,9 @@
  */
 package loanmain;
 
+import com.google.common.eventbus.EventBus;
+
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * This class represents the item of a loan, with its entries, options and results.
@@ -43,14 +43,6 @@ public final class LoanItem implements Cloneable, Serializable {
      */
     private LoanType type = LoanType.MENSUALITE;
     /**
-     * List of components that are interested in item change events
-     */
-    private transient List<ChangeListener> changeListeners = null;
-    /**
-     * List of components that are interested in item diff events
-     */
-    private transient List<DiffListener> diffListeners = null;
-    /**
      * Name of this loan item
      */
     private String name = null;
@@ -85,12 +77,16 @@ public final class LoanItem implements Cloneable, Serializable {
      */
     private Float insurance = 0F;
 
+    /**
+     * Bus to notifify the linked TabbedPanel
+     */
+    private EventBus eventBus = new EventBus();
+
 //Methods
     /**
      * Default constructor
      */
     public LoanItem() {
-        changeListeners = new ArrayList<ChangeListener>();
     }
 
     /**
@@ -113,78 +109,9 @@ public final class LoanItem implements Cloneable, Serializable {
         return lClone;
     }
 
-//Listeners
-    /**
-     * Add a new listener
-     *
-     * @param pListener the new listener
-     */
-    public void addChangeListener(final ChangeListener pListener) {
-        if (changeListeners == null) {
-            //This happens after a deserialization
-            changeListeners = new ArrayList<ChangeListener>();
-        }
-        if (!changeListeners.contains(pListener)) {
-            changeListeners.add(pListener);
-        }
-    }
-
-    /**
-     * Remove a listener
-     *
-     * @param pListener the listener to remove from the list
-     */
-    public void removeChangeListener(final ChangeListener pListener) {
-        if (changeListeners.contains(pListener)) {
-            changeListeners.remove(pListener);
-        }
-    }
-
-    /**
-     * Aware the listeners that this item has changed
-     */
-    public void fireItemChanged() {
-        for (ChangeListener lListener : changeListeners) {
-            lListener.itemChanged(this);
-        }
-    }
-
-    /**
-     * Add a new listener
-     *
-     * @param pListener the new listener
-     */
-    public void addDiffListener(final DiffListener pListener) {
-        if (diffListeners == null) {
-            //This happens after a deserialization
-            diffListeners = new ArrayList<DiffListener>();
-        }
-        if (!diffListeners.contains(pListener)) {
-            diffListeners.add(pListener);
-        }
-    }
-
-    /**
-     * Remove a listener
-     *
-     * @param pListener the listener to remove from the list
-     */
-    public void removeDiffListener(final DiffListener pListener) {
-        if (diffListeners.contains(pListener)) {
-            diffListeners.remove(pListener);
-        }
-    }
-
-    /**
-     * Aware the listeners that this item is diffed
-     *
-     * @param pItem1 the first loan item
-     * @param pItem2 the second loan item
-     */
-    public void fireItemDiffed(final LoanItem pItem1, final LoanItem pItem2) {
-        for (DiffListener lListener : diffListeners) {
-            lListener.itemDiffed(pItem1, pItem2);
-        }
+    public EventBus getEventBus()
+    {
+        return eventBus;
     }
 
 //getters and setters

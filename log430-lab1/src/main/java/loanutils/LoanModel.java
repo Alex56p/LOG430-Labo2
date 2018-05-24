@@ -1,13 +1,15 @@
 /*
  * The underlying model of the application (collection of LoanItem).
  */
-package loanmain;
+package loanutils;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import loanmain.LoanItem;
 import loanutils.FrameUtils;
 import static loanutils.MyBundle.translate;
 

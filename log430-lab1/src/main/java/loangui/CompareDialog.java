@@ -18,7 +18,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.ListCellRenderer;
 import loanmain.LoanItem;
-import loanmain.LoanModel;
+import loanutils.LoanModel;
 import loanutils.FrameUtils;
 import loanutils.JbiBtnFactory;
 import static loanutils.MyBundle.translate;

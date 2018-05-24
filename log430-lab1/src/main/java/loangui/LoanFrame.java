@@ -28,15 +28,15 @@ import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JSeparator;
 import javax.swing.JTabbedPane;
-import static javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import loanmain.CalcLoanItem;
-import loanmain.LoanControler;
-import loanmain.LoanItem;
-import loanmain.LoanModel;
+
+import com.google.common.eventbus.EventBus;
+import loanmain.*;
 import loanutils.FrameUtils;
 import loanutils.JbiBtnFactory;
+import loanutils.LoanModel;
+
 import static loanutils.MyBundle.translate;
 
 /**
@@ -351,10 +351,13 @@ public class LoanFrame extends JFrame {
      */
     private void addItem(final LoanItem pItem) {
         int lNb = tabPane.getTabCount();
-        pItem.addChangeListener(entryPanel);
-        pItem.addChangeListener(optionPanel);
+        EventBus bus = pItem.getEventBus();
         TabbedPanel lTabbedPanel = new TabbedPanel();
-        pItem.addChangeListener(lTabbedPanel);
+        bus.register(lTabbedPanel);
+
+        EventBusManager.GetBus().register(entryPanel);
+        EventBusManager.GetBus().register(optionPanel);
+
         if (pItem.getName() == null) {
             pItem.setName(String.valueOf(lNb + 1));
         }
@@ -371,10 +374,12 @@ public class LoanFrame extends JFrame {
      * @param pItem2 the second item
      */
     private void addItem(final LoanItem pItem, final LoanItem pItem1, final LoanItem pItem2) {
-        pItem.addChangeListener(entryPanel);
-        pItem.addChangeListener(optionPanel);
+        EventBusManager.GetBus().register(entryPanel);
+        EventBusManager.GetBus().register(optionPanel);
+
         TabbedPanel lTabbedPanel = new TabbedPanel();
-        pItem.addDiffListener(lTabbedPanel);
+        pItem.getEventBus().register(lTabbedPanel);
+
         model.add(pItem, pItem1, pItem2);
         Icon lIcon = FrameUtils.createImageIcon("emprunt.png", "");
         tabPane.addTab(pItem.getName(), lIcon, lTabbedPanel, translate("tabTooltip"));

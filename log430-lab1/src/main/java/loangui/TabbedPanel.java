@@ -8,9 +8,10 @@ import javax.swing.BorderFactory;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+
+import com.google.common.eventbus.Subscribe;
 import loanmain.CalcLoanItem;
-import loanmain.ChangeListener;
-import loanmain.DiffListener;
+import loanmain.LoanChangeEvent;
 import loanmain.LoanItem;
 import loanutils.FormatterFactory;
 import loanutils.FrameUtils;
@@ -21,7 +22,7 @@ import static loanutils.MyBundle.translate;
  *
  * @author jean-blas imbert
  */
-public class TabbedPanel extends JPanel implements ChangeListener, DiffListener {
+public class TabbedPanel extends JPanel {
 
     private static final long serialVersionUID = 1L;
     /**
@@ -71,12 +72,17 @@ public class TabbedPanel extends JPanel implements ChangeListener, DiffListener 
         add(buildDiversPanel());
     }
 
+    @Subscribe
+    public void itemChanged(LoanChangeEvent event) {
+        itemChanged((LoanItem)event.GetChangedItem());
+    }
+
     /**
      * Fill the components with their respective values
      *
      * @param pItem the Loan item corresponding to this panel
      */
-    @Override
+    @Subscribe
     public void itemChanged(final LoanItem pItem) {
         Double lMensHorsAss = CalcLoanItem.computeMensHorsAss(pItem);
         if (lMensHorsAss == null) {
@@ -110,7 +116,6 @@ public class TabbedPanel extends JPanel implements ChangeListener, DiffListener 
      * @param pItem1 the first loan item
      * @param pItem2 the second loan item
      */
-    @Override
     public void itemDiffed(final LoanItem pItem1, final LoanItem pItem2) {
         Double lMensHorsAss1 = CalcLoanItem.computeMensHorsAss(pItem1);
         if (lMensHorsAss1 == null) {

@@ -20,7 +20,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
 import loanmain.LoanItem;
-import loanmain.SimulModel;
+import loanutils.SimulModel;
 import loanutils.FormatterFactory;
 import loanutils.FrameUtils;
 import loanutils.JbiBtnFactory;
