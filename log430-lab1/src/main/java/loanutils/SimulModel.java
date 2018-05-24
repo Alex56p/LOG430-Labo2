@@ -111,8 +111,7 @@ public class SimulModel extends AbstractTableModel {
                 return (Double) getValueAt(pRow - 1, 1) - (Double) getValueAt(pRow, 1);
             case 4:
                 if (pRow == 0 || item.getInsurance().equals(0F)) {
-                    return 0
-                    D;
+                    return 0D;
                 }
                 return CalcLoanItem.computeMensAss(item) * pRow;
             case 5:
