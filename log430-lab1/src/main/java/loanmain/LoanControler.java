@@ -92,14 +92,8 @@ public class LoanControler extends AbstractModule {
     private void compute() {
 
         Injector injector = Guice.createInjector(this);
-
         GuiceCalculator calculator = injector.getInstance(GuiceCalculator.class);
-
         calculator.execute(item);
-
-        LoanChangeEvent event = new LoanChangeEvent(item);
-        EventBusManager.GetBus().post(event);
-        item.getEventBus().post(event);
     }
 
     /**
@@ -151,6 +145,6 @@ public class LoanControler extends AbstractModule {
                 break;
         }
 
-        bindInterceptor(Matchers.subclassesOf(Operation.class), Matchers.any(), new LoggingInterceptor());
+        bindInterceptor(Matchers.subclassesOf(Operation.class), Matchers.any(), new EventInterceptor(item));
     }
 }
