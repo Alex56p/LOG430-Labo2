@@ -11,9 +11,10 @@
  */
 package loanmain;
 
-import javax.swing.tree.ExpandVetoException;
-
-import static loanmain.LoanItem.LoanType.DUREE;
+import com.google.inject.AbstractModule;
+import com.google.inject.Guice;
+import com.google.inject.Injector;
+import com.google.inject.matcher.Matchers;
 
 /**
  * Loan controler that makes the MVC model complete.<BR>
@@ -27,7 +28,7 @@ import static loanmain.LoanItem.LoanType.DUREE;
  *
  * @author jean-blas imbert
  */
-public class LoanControler {
+public class LoanControler extends AbstractModule {
 
     /**
      * The data model current item
@@ -89,40 +90,16 @@ public class LoanControler {
      * Run the computation process depending on the loan type
      */
     private void compute() {
-        Double lNewValue = null;
-        switch (item.getLoanType()) {
-            case DUREE:
-                lNewValue = CalcLoanItem.computeDuration(item);
-                if (lNewValue != null) {
-                    item.setDuree(lNewValue.floatValue());
-                }
-                break;
-            case MENSUALITE:
-                lNewValue = CalcLoanItem.computeMensHorsAss(item);
-                if (lNewValue != null) {
-                    Double lMensAss = CalcLoanItem.computeMensAss(item);
-                    Double lMens = lNewValue + (lMensAss == null ? 0D : lMensAss);
-                    item.setMensualite(lMens.floatValue());
-                }
-                break;
-            case MONTANT:
-                lNewValue = CalcLoanItem.computeAmount(item);
-                if (lNewValue != null) {
-                    item.setAmount(lNewValue.floatValue());
-                }
-                break;
-            case TAUX:
-                lNewValue = CalcLoanItem.computeRate(item);
-                if (lNewValue != null) {
-                    item.setTaux(lNewValue.floatValue());
-                }
-                break;
-        }
-        if (lNewValue != null) {
-            LoanChangeEvent event = new LoanChangeEvent(item);
-            EventBusManager.GetBus().post(event);
-            item.getEventBus().post(event);
-        }
+
+        Injector injector = Guice.createInjector(this);
+
+        GuiceCalculator calculator = injector.getInstance(GuiceCalculator.class);
+
+        calculator.execute(item);
+
+        LoanChangeEvent event = new LoanChangeEvent(item);
+        EventBusManager.GetBus().post(event);
+        item.getEventBus().post(event);
     }
 
     /**
@@ -154,5 +131,26 @@ public class LoanControler {
         item.setInsurance(pAss);
         item.setSalary(pSal);
         compute();
+    }
+
+    @Override
+    protected void configure() {
+
+        switch (item.getLoanType()) {
+            case DUREE:
+                bind(Operation.class).to(OpDuree.class);
+                break;
+            case MENSUALITE:
+                bind(Operation.class).to(OpMensualite.class);
+                break;
+            case MONTANT:
+                bind(Operation.class).to(OpMontant.class);
+                break;
+            case TAUX:
+                bind(Operation.class).to(OpTaux.class);
+                break;
+        }
+
+        bindInterceptor(Matchers.subclassesOf(Operation.class), Matchers.any(), new LoggingInterceptor());
     }
 }
