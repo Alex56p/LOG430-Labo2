@@ -16,7 +16,6 @@ public class EventInterceptor implements MethodInterceptor {
 
         LoanChangeEvent event = new LoanChangeEvent(item);
         EventBusManager.GetBus().post(event);
-        item.getEventBus().post(event);
 
         return methodInvocation.proceed();
     }

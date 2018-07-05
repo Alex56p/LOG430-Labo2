@@ -3,8 +3,6 @@
  */
 package loanmain;
 
-import com.google.common.eventbus.EventBus;
-
 import java.io.Serializable;
 
 /**
@@ -80,7 +78,6 @@ public final class LoanItem implements Cloneable, Serializable {
     /**
      * Bus to notifify the linked TabbedPanel
      */
-    private EventBus eventBus = new EventBus();
 
 //Methods
     /**
@@ -107,11 +104,6 @@ public final class LoanItem implements Cloneable, Serializable {
         lClone.setSalary(getSalary());
         lClone.setLoanType(getLoanType());
         return lClone;
-    }
-
-    public EventBus getEventBus()
-    {
-        return eventBus;
     }
 
 //getters and setters

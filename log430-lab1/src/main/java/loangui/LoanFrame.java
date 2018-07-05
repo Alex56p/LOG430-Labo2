@@ -351,12 +351,11 @@ public class LoanFrame extends JFrame {
      */
     private void addItem(final LoanItem pItem) {
         int lNb = tabPane.getTabCount();
-        EventBus bus = pItem.getEventBus();
         TabbedPanel lTabbedPanel = new TabbedPanel();
-        bus.register(lTabbedPanel);
 
         EventBusManager.GetBus().register(entryPanel);
         EventBusManager.GetBus().register(optionPanel);
+        EventBusManager.GetBus().register(lTabbedPanel);
 
         if (pItem.getName() == null) {
             pItem.setName(String.valueOf(lNb + 1));
@@ -374,11 +373,10 @@ public class LoanFrame extends JFrame {
      * @param pItem2 the second item
      */
     private void addItem(final LoanItem pItem, final LoanItem pItem1, final LoanItem pItem2) {
+        TabbedPanel lTabbedPanel = new TabbedPanel();
+        EventBusManager.GetBus().register(lTabbedPanel);
         EventBusManager.GetBus().register(entryPanel);
         EventBusManager.GetBus().register(optionPanel);
-
-        TabbedPanel lTabbedPanel = new TabbedPanel();
-        pItem.getEventBus().register(lTabbedPanel);
 
         model.add(pItem, pItem1, pItem2);
         Icon lIcon = FrameUtils.createImageIcon("emprunt.png", "");

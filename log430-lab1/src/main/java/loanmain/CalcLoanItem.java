@@ -102,7 +102,6 @@ public final class CalcLoanItem {
         final double lD = pItem.getDuree();
         final double lPuis = 1D + 1D / 12D / lD;
         class lFunc implements OneParamFuncItf<Double> {
-
             @Override
             public Double f(Double pX) {
                 return Math.pow(pX, lPuis) - (pC + 1D) * pX + pC;
