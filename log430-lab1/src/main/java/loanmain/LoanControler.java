@@ -92,7 +92,7 @@ public class LoanControler extends AbstractModule {
     private void compute() {
 
         Injector injector = Guice.createInjector(this);
-        GuiceCalculator calculator = injector.getInstance(GuiceCalculator.class);
+        CalcLoanItem calculator = injector.getInstance(CalcLoanItem.class);
         calculator.execute(item);
     }
 

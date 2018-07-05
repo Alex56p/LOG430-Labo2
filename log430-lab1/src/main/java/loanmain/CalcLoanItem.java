@@ -1,6 +1,6 @@
 /*
  * Utility class that computes some Loanitem field values.
- * 
+ *
  * Note : all calculations are made from the following 3 equations :<BR>
  * Given A = amount to borrow (€), M = monthly fee (€), Mi = insurance monthly fee (€),
  * D = duration (year), Ti = insurance rate (%), Te = loan rate (%), we have : <BR>
@@ -18,6 +18,8 @@ import loansolver.OneParamFuncItf;
 import loansolver.Solver;
 import loansolver.SolverItf;
 
+import javax.inject.Inject;
+
 /**
  * Utility class that computes some Loanitem field values.
  *
@@ -25,10 +27,19 @@ import loansolver.SolverItf;
  */
 public final class CalcLoanItem {
 
+    private Operation operation;
+
     /**
      * Utility class => private constructor
      */
-    private CalcLoanItem() {
+
+    @Inject
+    public CalcLoanItem(Operation operation) {
+        this.operation = operation;
+    }
+
+    public void execute(LoanItem item) {
+        operation.operate(item);
     }
 
     /**
