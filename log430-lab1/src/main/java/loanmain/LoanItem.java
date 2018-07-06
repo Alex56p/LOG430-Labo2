@@ -178,4 +178,15 @@ public final class LoanItem implements Cloneable, Serializable {
     public void setLoanType(LoanType pType) {
         this.type = pType;
     }
+
+    public void setLoanType() {
+        if(amount == 0.0f)
+            setLoanType(LoanType.MONTANT);
+        else if(mensualite == 0.0f)
+            setLoanType(LoanType.MENSUALITE);
+        else if(taux == 0.0f)
+            setLoanType(LoanType.TAUX);
+        else if(duree == 0.0f)
+            setLoanType(LoanType.DUREE);
+    }
 }

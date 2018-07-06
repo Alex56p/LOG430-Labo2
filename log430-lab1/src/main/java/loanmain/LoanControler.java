@@ -140,6 +140,7 @@ public class LoanControler implements Controler{
         item.setTaux(pTau);
         item.setDuree(pTim);
         item.setMensualite(pMon);
+        item.setLoanType();
         compute();
     }
 

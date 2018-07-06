@@ -2,10 +2,12 @@ package loanmain;
 
 import com.google.common.eventbus.EventBus;
 import com.google.inject.Guice;
+import com.google.inject.Inject;
 import com.google.inject.Injector;
 
 public class EventBusManager
 {
+    @Inject
     static private EventBus eventBus = new EventBus();
 
     static private EventBus inject()
