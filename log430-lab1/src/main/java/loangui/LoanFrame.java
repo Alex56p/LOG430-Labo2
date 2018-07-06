@@ -32,6 +32,9 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import com.google.common.eventbus.EventBus;
+import com.google.inject.Guice;
+import com.google.inject.Inject;
+import com.google.inject.Injector;
 import loanmain.*;
 import loanutils.FrameUtils;
 import loanutils.JbiBtnFactory;
@@ -102,12 +105,16 @@ public class LoanFrame extends JFrame {
     /**
      * The loan controler
      */
+    @Inject
     private LoanControler controler = new LoanControler();
 
     /**
      * Constructor
      */
     public LoanFrame() {
+
+        Injector injector = Guice.createInjector(new AppInjector());
+        controler = injector.getInstance(LoanControler.class);
         entryPanel = new EntryPanel(controler);
         optionPanel = new OptionPanel(controler);
         init();

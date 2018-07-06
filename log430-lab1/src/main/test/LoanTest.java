@@ -13,11 +13,11 @@ public class LoanTest {
     @Tested
     private LoanControler loanControler;
 
-    //@Mocked
-    //private EventBusManager bus;
+    @Mocked
+    private EventBus bus;
 
-    //@Mocked
-    //private CalcLoanItem calc;
+    @Mocked
+    private CalcLoanItem calc;
 
     private LoanItem item;
 
@@ -25,9 +25,11 @@ public class LoanTest {
     public void testMensualité(){
         item = new LoanItem();
         item.setLoanType(LoanItem.LoanType.MENSUALITE);
+        item.setMensualite(0.13215074f);
         loanControler.setCurrentItem(item);
-        new Expectations(){{
-
+        new Expectations(calc){{
+        bus.post(withInstanceOf(LoanChangeEvent.class));
+        times = 1;
         }};
         loanControler.updateEntry(10.0f,10.0f,0.0f,10.0f);
 

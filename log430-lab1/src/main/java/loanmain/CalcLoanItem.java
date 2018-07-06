@@ -1,6 +1,6 @@
 /*
  * Utility class that computes some Loanitem field values.
- *
+ * 
  * Note : all calculations are made from the following 3 equations :<BR>
  * Given A = amount to borrow (€), M = monthly fee (€), Mi = insurance monthly fee (€),
  * D = duration (year), Ti = insurance rate (%), Te = loan rate (%), we have : <BR>
@@ -12,13 +12,11 @@
  * where f(Te, D) = x / (1 - (1 / (1 + x)^(12 * D))) and x = Te / 12
 
  */
-package loanmain;
+        package loanmain;
 
-import loansolver.OneParamFuncItf;
-import loansolver.Solver;
-import loansolver.SolverItf;
-
-import javax.inject.Inject;
+        import loansolver.OneParamFuncItf;
+        import loansolver.Solver;
+        import loansolver.SolverItf;
 
 /**
  * Utility class that computes some Loanitem field values.
@@ -27,19 +25,10 @@ import javax.inject.Inject;
  */
 public final class CalcLoanItem {
 
-    private Operation operation;
-
     /**
      * Utility class => private constructor
      */
-
-    @Inject
-    public CalcLoanItem(Operation operation) {
-        this.operation = operation;
-    }
-
-    public void execute(LoanItem item) {
-        operation.operate(item);
+    private CalcLoanItem() {
     }
 
     /**
@@ -109,10 +98,11 @@ public final class CalcLoanItem {
      * @param pItem the current loan item
      * @return the root of the function for this amount
      */
-    public static Double solveTaux(final Double pC, final LoanItem pItem) {
+    private static Double solveTaux(final Double pC, final LoanItem pItem) {
         final double lD = pItem.getDuree();
         final double lPuis = 1D + 1D / 12D / lD;
         class lFunc implements OneParamFuncItf<Double> {
+
             @Override
             public Double f(Double pX) {
                 return Math.pow(pX, lPuis) - (pC + 1D) * pX + pC;
@@ -163,6 +153,61 @@ public final class CalcLoanItem {
             return null;
         }
         return pItem.getAmount() * pItem.getInsurance() / 1200D;
+    }
+
+    /**
+     * Compute the amount<BR>
+     * We need :
+     * <ol>
+     * <li>A monthly fee (Mt)
+     * <li>A duration (D)
+     * <li>A loan rate (Te)
+     * <li>An insurance rate (Ti)
+     * </ol>
+     *
+     * @param pItem the current loan item
+     * @return the amount (A)
+     */
+    public static Double computeAmount(final LoanItem pItem) {
+        if (pItem.getMensualite().equals(0F) || pItem.getTaux().equals(0F) || pItem.getDuree().equals(0F)) {
+            return null;
+        }
+        return pItem.getMensualite() / (calcF(pItem) + pItem.getInsurance() / 1200D);
+    }
+
+    /**
+     * Compute the duration<BR>
+     * We need :
+     * <ol>
+     * <li>An amount (A)
+     * <li>A monthly fee (Mt)
+     * <li>A loan rate (Te)
+     * <li>An insurance rate (Ti)
+     * </ol>
+     *
+     * @param pItem the current loan item
+     * @return the duration (D)
+     */
+    public static Double computeDuration(final LoanItem pItem) {
+        if (pItem.getMensualite().equals(0F) || pItem.getTaux().equals(0F) || pItem.getAmount().equals(0F)) {
+            return null;
+        }
+        double lMens = pItem.getMensualite() - (pItem.getAmount() * pItem.getInsurance() / 1200D);
+        double lTaux = pItem.getTaux() / 1200D;
+        return -Math.log(1D - pItem.getAmount() * lTaux / lMens) / Math.log(1D + lTaux) / 12D;
+    }
+
+    /**
+     * Compute the loan rate knowing the monthly fee, amount and duration.
+     *
+     * @param pItem the current loan item
+     * @return true if the item has changed, false otherwise
+     */
+    public static Double computeRate(final LoanItem pItem) {
+        if (pItem.getMensualite().equals(0F) || pItem.getAmount().equals(0F) || pItem.getDuree().equals(0F)) {
+            return null;
+        }
+        return calcTauxBis(pItem);
     }
 
     /**
