@@ -28,7 +28,7 @@ import com.google.inject.matcher.Matchers;
  *
  * @author jean-blas imbert
  */
-public class LoanControler {
+public class LoanControler implements Controler{
 
     /**
      * The data model current item
@@ -89,7 +89,8 @@ public class LoanControler {
     /**
      * Run the computation process depending on the loan type
      */
-    private void compute() {
+    @Override
+    public void compute() {
 
         Double lNewValue = null;
         switch (item.getLoanType()) {

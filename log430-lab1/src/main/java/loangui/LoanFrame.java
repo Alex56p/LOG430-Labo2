@@ -31,7 +31,6 @@ import javax.swing.JTabbedPane;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-import com.google.common.eventbus.EventBus;
 import com.google.inject.Guice;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
@@ -113,7 +112,7 @@ public class LoanFrame extends JFrame {
      */
     public LoanFrame() {
 
-        Injector injector = Guice.createInjector(new AppInjector());
+        Injector injector = Guice.createInjector(new ControlerInjector());
         controler = injector.getInstance(LoanControler.class);
         entryPanel = new EntryPanel(controler);
         optionPanel = new OptionPanel(controler);

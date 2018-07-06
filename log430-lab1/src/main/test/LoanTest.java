@@ -1,23 +1,21 @@
 import com.google.common.eventbus.EventBus;
-import mockit.Expectations;
-import mockit.Injectable;
-import mockit.Mocked;
+import mockit.*;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import loanmain.*;
-import mockit.Tested;
 
 public class LoanTest {
 
     @Tested
     private LoanControler loanControler;
 
-    @Mocked
-    private EventBus bus;
+    //@Mocked
+    //private EventBus bus;
 
     @Mocked
     private CalcLoanItem calc;
+
 
     private LoanItem item;
 
@@ -25,15 +23,16 @@ public class LoanTest {
     public void testMensualité(){
         item = new LoanItem();
         item.setLoanType(LoanItem.LoanType.MENSUALITE);
-        item.setMensualite(0.13215074f);
         loanControler.setCurrentItem(item);
-        new Expectations(calc){{
-        bus.post(withInstanceOf(LoanChangeEvent.class));
-        times = 1;
-        }};
+        new MockUp<CalcLoanItem>(){
+            @Mock
+            Double computeMensHorsAss(LoanItem item){
+                return 10D;
+            }
+        };
         loanControler.updateEntry(10.0f,10.0f,0.0f,10.0f);
 
-        Assert.assertEquals((Float)0.13215074f, item.getMensualite());
+        Assert.assertEquals(10D, item.getMensualite(),0);
     }
 
     @Test
@@ -41,12 +40,15 @@ public class LoanTest {
         item = new LoanItem();
         item.setLoanType(LoanItem.LoanType.TAUX);
         loanControler.setCurrentItem(item);
-        new Expectations(){{
+        new MockUp<CalcLoanItem>(){
+            @Mock
+            Double computeRate(LoanItem item){
+                return 10D;
+            }
+        };
+        loanControler.updateEntry(10.0f,0.0f,10.0f,10.0f);
 
-        }};
-        loanControler.updateEntry(100.0f,0.0f,100.0f,100.0f);
-
-        Assert.assertEquals((Float)1000.0f, item.getTaux());
+        Assert.assertEquals(10D, item.getTaux(),0);
     }
 
     @Test
@@ -54,12 +56,15 @@ public class LoanTest {
         item = new LoanItem();
         item.setLoanType(LoanItem.LoanType.MONTANT);
         loanControler.setCurrentItem(item);
-        new Expectations(){{
+        new MockUp<CalcLoanItem>(){
+            @Mock
+            Double computeAmount(LoanItem item){
+                return 10D;
+            }
+        };
+        loanControler.updateEntry(0.0f,10.0f,10.0f,10.0f);
 
-        }};
-        loanControler.updateEntry(0.0f,100.0f,100.0f,100.0f);
-
-        Assert.assertEquals((Float)1200.0f, item.getAmount());
+        Assert.assertEquals(10D, item.getAmount(),0);
     }
 
     @Test
@@ -67,11 +72,14 @@ public class LoanTest {
         item = new LoanItem();
         item.setLoanType(LoanItem.LoanType.DUREE);
         loanControler.setCurrentItem(item);
-        new Expectations(){{
+        new MockUp<CalcLoanItem>(){
+            @Mock
+            Double computeDuration(LoanItem item){
+                return 10D;
+            }
+        };
+        loanControler.updateEntry(10.0f,10.0f,10.0f,0.0f);
 
-        }};
-        loanControler.updateEntry(100.0f,100.0f,100.0f,0.0f);
-
-        Assert.assertEquals((Float)0.09058849f, item.getDuree());
+        Assert.assertEquals(10D, item.getDuree(),0);
     }
 }
